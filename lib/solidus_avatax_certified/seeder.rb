@@ -33,18 +33,15 @@ module SolidusAvataxCertified
 
         default_tax_category&.destroy
         default_tax_rate&.destroy
-
-        clothing = ::Spree::TaxCategory.find_or_create_by(name: 'Clothing')
-        clothing.update(tax_code: 'P0000000')
         tax_zone = ::Spree::Zone.find_or_create_by(name: 'North America')
         tax_calculator = ::Spree::Calculator::AvalaraTransaction.create!
         sales_tax = ::Spree::TaxRate.find_or_create_by(name: 'Tax') do |tax_rate|
           # default values for the create
           tax_rate.amount = BigDecimal('0')
           tax_rate.calculator = tax_calculator
-          tax_rate.tax_category = clothing
+          tax_rate.tax_category = default_tax_category
         end
-        sales_tax.update!(tax_category: clothing, name: 'Tax', amount: BigDecimal('0'), zone: tax_zone, show_rate_in_label: false, calculator: tax_calculator)
+        sales_tax.update!(tax_category: default_tax_category, name: 'Tax', amount: BigDecimal('0'), zone: tax_zone, show_rate_in_label: false, calculator: tax_calculator)
 
         shipping = ::Spree::TaxCategory.find_or_create_by(name: 'Shipping', tax_code: 'FR000000')
         shipping_tax = ::Spree::TaxRate.find_or_create_by(name: 'Shipping Tax') do |shipping_tax|
@@ -61,7 +58,7 @@ module SolidusAvataxCertified
       end
 
       def add_tax_category_to_products
-        ::Spree::Product.update_all(tax_category_id: ::Spree::TaxCategory.find_by(name: 'Clothing').id)
+        ::Spree::Product.update_all(tax_category_id: ::Spree::TaxCategory.find_by(name: 'Default').id)
       end
 
       def populate_default_stock_location
@@ -69,14 +66,14 @@ module SolidusAvataxCertified
 
         return unless default.zipcode.nil? || default.address1.nil?
 
-        state = ::Spree::State.find_by(name: 'Alabama')
+        state = ::Spree::State.find_by(name: 'New Jersey')
 
         address = {
-          address1: '915 S Jackson St',
-          city: 'Montgomery',
+          address1: '1112 Corporate Rd',
+          city: 'North Brunswick Township',
           state: state,
           country: state.country,
-          zipcode: '36104',
+          zipcode: '08902',
           default: true,
           name: 'default',
           backorderable_default: true
