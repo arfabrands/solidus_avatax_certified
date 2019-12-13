@@ -28,10 +28,9 @@ module SolidusAvataxCertified
       end
 
       def create_tax
-        default_tax_category = ::Spree::TaxCategory.find_by(name: 'Default')
+        default_tax_category = ::Spree::TaxCategory.find_or_create_by(name: 'Default')
         default_tax_rate = ::Spree::TaxRate.find_by(name: 'North America')
 
-        default_tax_category&.destroy
         default_tax_rate&.destroy
         tax_zone = ::Spree::Zone.find_or_create_by(name: 'North America')
         tax_calculator = ::Spree::Calculator::AvalaraTransaction.create!
