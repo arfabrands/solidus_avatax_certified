@@ -54,12 +54,6 @@ describe Spree::Calculator::AvalaraTransaction, :vcr do
           expect(calculator.compute(line_item)).to eq(0.4)
         end
 
-        it 'is equal to the previous additional_tax_total if order is at cart' do
-          order.state = 'cart'
-          line_item.additional_tax_total = 0.1
-          expect(calculator.compute(line_item)).to eq(0.1)
-        end
-
         it 'is equal to the previous additional_tax_total if order is at address' do
           order.state = 'address'
           line_item.additional_tax_total = 0.1
